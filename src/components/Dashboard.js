@@ -146,7 +146,7 @@ const updateNote = (note)=>{
         filterData.map((note,index) => {
           const date= new Date(note.createdAt).toLocaleString()
           return <>
-           <div  className="note" key={index}>
+           <div onClick={()=>setNote(note._id)} className="note" key={index}>
             <BsFillClockFill/> {date} <br/>
             <RiStickyNoteFill/>
             {update ===note._id ? <input onChange={(e)=>setTitleUpdate(e.target.value)} value={titleUpdate|| note.title}></input>:<span>{note.title}</span>} <br/>
