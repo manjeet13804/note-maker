@@ -14,7 +14,11 @@ const Dashboard = () => {
   const [render,setRender] =useState(false);
   const [filterData,setFilterData] = useState([]);
   const [searchValue, setSearchValue] = useState();
-  const [noteid,setNoteid]=useState('')
+  const [noteid,setNoteid]=useState('');
+  const [update,setUpdate] =useState("");
+  const [titleUpdate,setTitleUpdate] = useState("");
+  const [descriptionUpdate,setDescriptionUpdate] = useState("");
+
   useEffect(()=>{
     axios.get("https://note-maker-backend.onrender.com/api/blogs",
     {
@@ -76,6 +80,36 @@ const deleteNote = ()=>{
     console.log(error);
   });
  
+ 
+}
+const updateNote = (note)=>{
+  if(update===noteid){
+    const DATA ={
+      title :titleUpdate,
+      description:descriptionUpdate
+    }
+    setRender(false)
+    axios.put(`https://note-maker-backend.onrender.com/api/blogs/${noteid}`,DATA,
+    {
+      headers: {
+        Authorization: localStorage.getItem("token")
+      }
+    })
+    .then(async function (response) {
+      
+      setRender(true)
+      setDescriptionUpdate("")
+      setTitleUpdate("")
+      setUpdate("")
+      alert("records updated successfully")
+    
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+   
+  }
+  else setUpdate(note);
 }
     if(!userId){
           return<>
@@ -128,11 +162,12 @@ const deleteNote = ()=>{
           const date= new Date(note.createdAt).toLocaleString()
           return <div onClick={()=>setNote(note._id)} className="note" key={index}>
             <BsFillClockFill/> {date} <br/>
-            <RiStickyNoteFill/><span>{note.title}</span><br />
-          {note.description}
+            <RiStickyNoteFill/>
+           {update ===note._id ? <input onChange={(e)=>setTitleUpdate(e.target.value)} value={titleUpdate|| note.title}></input>:<span>{note.title}</span>} <br/>
+           {update ===note._id ? <input onChange={(e)=>setDescriptionUpdate(e.target.value)}value={descriptionUpdate || note.description} ></input>:<span>{note.description}</span>} <br/>
           {(noteid===note._id) && <div>
             <button className="btn btn-primary" onClick={deleteNote}>delete</button>
-            <button className="btn btn-primary">update</button>
+            <button className="btn btn-primary" onClick={()=>updateNote(noteid)}>update</button>
             </div>}
           </div>
         })}
