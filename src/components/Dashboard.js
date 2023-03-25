@@ -148,11 +148,12 @@ const updateNote = (note)=>{
           return <>
            <div  className="note" key={index}>
             <BsFillClockFill/> {date} <br/>
-            <RiStickyNoteFill/><span>{note.title}</span><br />
-          {note.description}
-          {note._id ===noteid && <div>
-            <button onClick={deleteNote}>delete</button>
-            <button>update</button>
+            <RiStickyNoteFill/>
+            {update ===note._id ? <input onChange={(e)=>setTitleUpdate(e.target.value)} value={titleUpdate|| note.title}></input>:<span>{note.title}</span>} <br/>
+           {update ===note._id ? <input onChange={(e)=>setDescriptionUpdate(e.target.value)}value={descriptionUpdate || note.description} ></input>:<span>{note.description}</span>} <br/>
+          {(noteid===note._id) && <div>
+            <button className="btn btn-primary" onClick={deleteNote}>delete</button>
+            <button className="btn btn-primary" onClick={()=>updateNote(noteid)}>update</button>
             </div>}
           </div>
           </>
