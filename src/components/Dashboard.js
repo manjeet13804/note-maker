@@ -8,9 +8,7 @@ import {RiStickyNoteFill} from 'react-icons/ri'
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 const Dashboard = () => {
-  const navigate =useNavigate()
   const userId = localStorage.getItem("userId");
   const [states, setStates] = useState([]);
   const [render,setRender] =useState(false)
@@ -38,7 +36,7 @@ const Dashboard = () => {
       })
       .then(async function (response) {
         alert("All records deleted successfully")
-      setRender(true)
+      setRender(!render)
       })
       .catch(function (error) {
         console.log(error);
