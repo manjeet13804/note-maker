@@ -11,7 +11,9 @@ import axios from "axios";
 const Dashboard = () => {
   const userId = localStorage.getItem("userId");
   const [states, setStates] = useState([]);
-  const [render,setRender] =useState(false)
+  const [render,setRender] =useState(false);
+  const [filterData,setFilterData] = useState([]);
+  const [searchValue, setSearchValue] = useState()
   useEffect(()=>{
     axios.get("https://note-maker-backend.onrender.com/api/blogs",
     {
@@ -26,8 +28,9 @@ const Dashboard = () => {
       console.log(error);
     });
    
-  },[])
+  },[render])
      function deleteAll(){
+      setRender(false)
       axios.delete("https://note-maker-backend.onrender.com/api/blogs",
       {
         headers: {
@@ -35,14 +38,19 @@ const Dashboard = () => {
         }
       })
       .then(async function (response) {
+        
+        setRender(true)
         alert("All records deleted successfully")
-      setRender(!render)
+      
       })
       .catch(function (error) {
         console.log(error);
       });
      }
-
+     const searchData = () => {
+      
+        setFilterData(states.filter(note => note.title.includes(searchValue)))
+    }
 
     if(!userId){
           return<>
@@ -57,7 +65,6 @@ const Dashboard = () => {
     <>
         <nav className="headercontainer">
         <div className="nav-menu">
-          
           <Link to="/dashboard"><AiOutlineHome/>Home</Link>
         </div>
         <div className="nav-menu">
@@ -71,13 +78,21 @@ const Dashboard = () => {
       <div className="notescontainer">
         {/* {console.log((states))} */}
         <div className="search-details">
-        <input type="search" className="search-text"></input>
-       <button className="btn-2"><BsSearch/></button>
+        <input type="search" className="search-text" value={searchValue} onChange={(e) => { setSearchValue(e.target.value) }} ></input>
+       <button className="btn-2" onClick={() => searchData()}><BsSearch/></button>
         </div>
        
-        {states.map((note,index) => {
+        {filterData.length ?
+        filterData.map((note,index) => {
           const date= new Date(note.createdAt).toLocaleString()
-          console.log(date)
+          return <div className="note" key={index}>
+            <BsFillClockFill/> {date} <br/>
+            <RiStickyNoteFill/><span>{note.title}</span><br />
+          {note.description}
+          </div>
+        })
+        :states.map((note,index) => {
+          const date= new Date(note.createdAt).toLocaleString()
           return <div className="note" key={index}>
             <BsFillClockFill/> {date} <br/>
             <RiStickyNoteFill/><span>{note.title}</span><br />
