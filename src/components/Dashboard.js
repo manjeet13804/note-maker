@@ -13,7 +13,7 @@ const Dashboard = () => {
   const [states, setStates] = useState([]);
   const [render,setRender] =useState(false)
   useEffect(()=>{
-    axios.get("http://localhost:5000/api/blogs",
+    axios.get("https://note-maker-backend.onrender.com/api/blogs",
     {
       headers: {
         Authorization: localStorage.getItem("token")
@@ -28,7 +28,7 @@ const Dashboard = () => {
    
   },[])
      function deleteAll(){
-      axios.delete("http://localhost:5000/api/blogs",
+      axios.delete("https://note-maker-backend.onrender.com/api/blogs",
       {
         headers: {
           Authorization: localStorage.getItem("token")

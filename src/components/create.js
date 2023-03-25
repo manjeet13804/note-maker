@@ -11,7 +11,7 @@ const Create = () => {
     const addNote = (e) => {
         e.preventDefault();
 
-        axios.post('http://localhost:5000/api/blogs', formData,
+        axios.post('https://note-maker-backend.onrender.com/api/blogs', formData,
             {
                 headers: {
                     authorization: localStorage.getItem('token')

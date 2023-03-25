@@ -22,7 +22,7 @@ const Login = () => {
         }
         localStorage.setItem('userId', DATA.email)
         localStorage.setItem('userId', DATA.email)
-         axios.post('http://localhost:5000/api/user/login', DATA)
+         axios.post('https://note-maker-backend.onrender.com/api/user/login', DATA)
                 .then(function (response) {
                      console.log(response.data.message);
                     const res = response.data.message

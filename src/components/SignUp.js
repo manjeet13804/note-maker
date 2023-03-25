@@ -36,7 +36,7 @@ function Signup() {
             if (!response.data.disposable && (response.data.risk === 8 || response.data.risk === 10)) {
                     const { email, password } = sigupDetails;   
                     axios
-                        .post("http://localhost:5000/api/user/signup", {
+                        .post("https://note-maker-backend.onrender.com/api/user/signup", {
                             email: email,
                             password: password,
                         })
