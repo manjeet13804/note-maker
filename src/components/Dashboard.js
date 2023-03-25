@@ -13,7 +13,8 @@ const Dashboard = () => {
   const [states, setStates] = useState([]);
   const [render,setRender] =useState(false);
   const [filterData,setFilterData] = useState([]);
-  const [searchValue, setSearchValue] = useState()
+  const [searchValue, setSearchValue] = useState();
+  const [noteid,setNoteid]=useState('')
   useEffect(()=>{
     axios.get("https://note-maker-backend.onrender.com/api/blogs",
     {
@@ -23,6 +24,7 @@ const Dashboard = () => {
     })
     .then(async function (response) {
       setStates(response.data.reverse());
+      
     })
     .catch(function (error) {
       console.log(error);
@@ -51,7 +53,30 @@ const Dashboard = () => {
       
         setFilterData(states.filter(note => note.title.includes(searchValue)))
     }
+    const setNote = (noteid)=>{
+setNoteid(noteid);
+console.log(noteid)
+    }
 
+const deleteNote = ()=>{
+  setRender(false)
+  axios.delete(`https://note-maker-backend.onrender.com/api/blogs/${noteid}`,
+  {
+    headers: {
+      Authorization: localStorage.getItem("token")
+    }
+  })
+  .then(async function (response) {
+    
+    setRender(true)
+    alert("records deleted successfully")
+  
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+ 
+}
     if(!userId){
           return<>
           <div>
@@ -64,6 +89,7 @@ const Dashboard = () => {
 
     <>
         <nav className="headercontainer">
+      
         <div className="nav-menu">
           <Link to="/dashboard"><AiOutlineHome/>Home</Link>
         </div>
@@ -85,18 +111,29 @@ const Dashboard = () => {
         {filterData.length ?
         filterData.map((note,index) => {
           const date= new Date(note.createdAt).toLocaleString()
-          return <div className="note" key={index}>
+          return <>
+           <div  className="note" key={index}>
             <BsFillClockFill/> {date} <br/>
             <RiStickyNoteFill/><span>{note.title}</span><br />
           {note.description}
+          {note._id ===noteid && <div>
+            <button onClick={deleteNote}>delete</button>
+            <button>update</button>
+            </div>}
           </div>
+          </>
+         
         })
         :states.map((note,index) => {
           const date= new Date(note.createdAt).toLocaleString()
-          return <div className="note" key={index}>
+          return <div onClick={()=>setNote(note._id)} className="note" key={index}>
             <BsFillClockFill/> {date} <br/>
             <RiStickyNoteFill/><span>{note.title}</span><br />
           {note.description}
+          {(noteid===note._id) && <div>
+            <button className="btn btn-primary" onClick={deleteNote}>delete</button>
+            <button className="btn btn-primary">update</button>
+            </div>}
           </div>
         })}
       </div>
