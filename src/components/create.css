@@ -1,0 +1,31 @@
+body{
+    background-image: url(../images/wall.jpeg);
+}
+.main-create{
+    width: 500px;
+    height: 450px;
+    /* background: white; */
+    margin: 100px auto;
+}
+.input-data{
+    width: 400px;
+    height: 30px;
+    border-radius: 5px;
+    margin: 10px 10%;
+    border: 2px solid blue;
+}
+.main-create label{
+    margin: 10px 10%;
+    color: white;
+}
+#input-data{
+    height: 100px;
+}
+.btn1{
+    width: 400px;
+    height: 30px;
+    border-radius: 5px;
+    margin: 10px 10%;
+    background-color: blue;
+    color: white;
+}

@@ -1,10 +1,12 @@
 import "./SignUp.css"
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Link } from "react-router-dom";
+import {AiOutlineLeft} from "react-icons/ai"
 function Signup() {
-    const [data, setData] = useState([])
+    const navigate = useNavigate();
 
     const {
         register,
@@ -15,26 +17,11 @@ function Signup() {
     const [sigupDetails, setSignDetails] = useState({
         email: "",
         password: "",
-        confirmPassword: "",
-        firstName: "",
-        lastName: ""
+        repeatPassword: "",
+       checkbox:false
     });
-
-    const navigate = useNavigate();
-    useEffect(() => {
-        axios.get("http://localhost:5000/data")
-            .then(res => setData(res.data.map((item) => item.email)))
-    }, [])
-
     async function onSubmit() {
-        const formData = {
-            "firstName": sigupDetails.firstName,
-            "lastName": sigupDetails.lastName,
-            "email": sigupDetails.email,
-            "passward": sigupDetails.password
-        }
-
-        const options = {
+             const options = {
             method: 'GET',
             url: 'https://mailcheck.p.rapidapi.com/',
             params: { domain: sigupDetails.email },
@@ -47,22 +34,17 @@ function Signup() {
         axios.request(options).then(function (response) {
             console.log(response.data)
             if (!response.data.disposable && (response.data.risk === 8 || response.data.risk === 10)) {
-                if (data.includes(sigupDetails.email)) {
-                    alert("email already exists")
-                }
-                else {
-                    fetch('http://localhost:5000/data', {
-                        method: 'post',
-                        headers: { "content-type": "application/json" },
-                        body: JSON.stringify(formData)
-                    }).then((res) => {
-                        alert('signup successfully')
-                        navigate("/")
-                    })
-                }
+                    const { email, password } = sigupDetails;   
+                    axios
+                        .post("http://localhost:5000/api/user/signup", {
+                            email: email,
+                            password: password,
+                        })
+                        .then((res) => navigate("/"))
+                        .catch((err) => alert("Email already Exists"));
             }
             else {
-                alert("please enter a valid email")
+                alert("please enter a valid  non disposable email")
             }
         }).catch(function (error) {
             console.error(error);
@@ -72,39 +54,9 @@ function Signup() {
 
     return <div className="main-box">
         <section className="information">
-            <p className="signup-para">Create New Account</p>
+            <p className="signup-para"><Link to="/">{<AiOutlineLeft/>}</Link> S I G N   U P</p>
             <form className="form" onSubmit={handleSubmit(onSubmit)} >
-                <input className="form-control" type="text" placeholder="First Name"
-                    {...register("firstName", {
-                        required: "Please Enter Your First Name!",
-                        pattern: {
-                            value: /^[a-z ,.'-]+$/i,
-                            message: "Please Enter A Valid First name!",
-                        },
-                    })}
-                    onChange={(e) =>
-                        setSignDetails({ ...sigupDetails, firstName: e.target.value })
-                    }
-                    value={sigupDetails.firstName} /><br />
-                {errors.firstName && (
-                    <p className="error">* {errors.firstName.message}</p>
-                )}
-                <input className="form-control" type="text" placeholder="Last Name"
-                    {...register("lastName", {
-                        required: "Please Enter Your Last Name!",
-                        pattern: {
-                            value: /^[a-z ,.'-]+$/i,
-                            message: "Please Enter A Valid Last name!",
-                        },
-                    })}
-                    onChange={(e) =>
-                        setSignDetails({ ...sigupDetails, lastName: e.target.value })
-                    }
-                    value={sigupDetails.lastName} /><br />
-                {errors.lastName && (
-                    <p className="error">* {errors.lastName.message}</p>
-                )}
-                <input className="form-control" type="email" placeholder="Mail Id"
+                <input className="form-control" type="email" placeholder="EMAIL"
                     {...register("email", {
                         required: "Please Enter Your Email!",
                         pattern: {
@@ -121,7 +73,7 @@ function Signup() {
                     <p className="error">* {errors.email.message}</p>
                 )}
 
-                <input className="form-control form-control-md" type="password" placeholder="password"
+                <input className="form-control form-control-md" type="password" placeholder="PASSWORD"
                     {...register("password", {
                         required: "Please Enter Your Password",
                         minLength: {
@@ -140,24 +92,38 @@ function Signup() {
                     <p className="error">* {errors.password.message}</p>
                 )}
 
-                <input className="form-control" type="password" placeholder="Confirm password"
-                    {...register("confirmPassword", {
-                        required: "Please Confirm Your Password",
+                <input className="form-control" type="password" placeholder="REPEAT PASSWORD"
+                    {...register("repeatPassword", {
+                        required: "Please Reapeat Your Password",
                         validate: (match) => {
                             const password = getValues("password");
                             return match === password || "Passwords should match!";
                         },
                     })}
                     onChange={(e) =>
-                        setSignDetails({ ...sigupDetails, confirmPassword: e.target.value })
+                        setSignDetails({ ...sigupDetails, repeatPassword: e.target.value })
                     }
-                    value={sigupDetails.confirmPassword} />
+                    value={sigupDetails.repeatPassword} />
 
-
-                {errors.confirmPassword && (
-                    <p className="error">* {errors.confirmPassword.message}</p>
+                {errors.repeatPassword && (
+                    <p className="error">* {errors.repeatPassword.message}</p>
                 )}
-                <button type="submit" className="btn btn-primary">Sign up</button>
+                <input  type="checkbox"
+                    {...register("checkbox", {
+                        required: "Please accept terms and Conndition",
+                       
+                    })}
+                    onChange={(e) =>
+                        setSignDetails({ ...sigupDetails, checkbox:!sigupDetails.checkbox })
+                    }
+                    value={sigupDetails.checkbox} />
+                    <span>  I agree with Terms & Conndition</span><br />
+
+                {errors.checkbox && (
+                    <p className="error">* {errors.checkbox.message}</p>
+                )}
+
+                <button type="submit" className="btn-button-1">CONTINUE</button>
 
             </form>
         </section>
