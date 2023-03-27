@@ -1,4 +1,5 @@
 import "./logout.css"
+import { Link } from "react-router-dom";
 const Logout = () => {
   const logoutHandle = ()=>{
     localStorage.clear();
