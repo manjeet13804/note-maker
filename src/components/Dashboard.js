@@ -8,6 +8,7 @@ import {RiStickyNoteFill} from 'react-icons/ri'
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Logout from "./logout";
 const Dashboard = () => {
   const userId = localStorage.getItem("userId");
   const [states, setStates] = useState([]);
@@ -133,6 +134,9 @@ const updateNote = (note)=>{
         </div>
         <div className="nav-menu">
         <button onClick={deleteAll}><RxCross2/>DeleteAll</button>
+        <button className="dropdown-content">
+              <Logout></Logout>
+            </button>
         </div>
         </nav>
       <div className="notescontainer">
